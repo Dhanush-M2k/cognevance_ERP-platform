@@ -1,0 +1,96 @@
+	<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Live Monitoring | Enterprise ERP Platform</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="~{fragments :: sidebar('monitoring')}"></div>
+    <div class="main-area">
+        <div th:replace="~{fragments :: topbar('Live System Monitoring','Real-time JVM, memory, CPU and thread health')}"></div>
+        <div class="content">
+
+            <div style="margin-bottom:18px; display:flex; align-items:center; font-size:13.5px; color:var(--color-text-muted);">
+                <span class="live-dot"></span> Live &mdash; auto-refreshing every 3 seconds &middot;
+                <span id="lastUpdated" style="margin-left:6px;">just now</span>
+            </div>
+
+            <div class="monitor-grid">
+                <div class="stat-card">
+                    <div class="stat-icon icon-blue">&#9889;</div>
+                    <div class="stat-value" id="cpuValue">--%</div>
+                    <div class="stat-label">CPU Load</div>
+                    <div class="progress-track"><div class="progress-fill" id="cpuBar" style="width:0%"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-green">&#129504;</div>
+                    <div class="stat-value" id="memValue">-- MB</div>
+                    <div class="stat-label">Memory Used</div>
+                    <div class="progress-track"><div class="progress-fill" id="memBar" style="width:0%"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-purple">&#128268;</div>
+                    <div class="stat-value" id="threadValue">--</div>
+                    <div class="stat-label">Live Threads</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-orange">&#9201;&#65039;</div>
+                    <div class="stat-value" id="uptimeValue" style="font-size:19px;">--</div>
+                    <div class="stat-label">Application Uptime</div>
+                </div>
+            </div>
+
+            <div class="panel-grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">CPU Load History</div>
+                            <div class="panel-subtitle">Last 30 samples</div>
+                        </div>
+                    </div>
+                    <canvas id="cpuChart" height="130"></canvas>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">Memory Usage History</div>
+                            <div class="panel-subtitle">Last 30 samples (MB)</div>
+                        </div>
+                    </div>
+                    <canvas id="memChart" height="130"></canvas>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">System Details</div>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <tbody>
+                        <tr><td style="width:220px; font-weight:600;">Status</td><td><span class="badge badge-active" id="statusBadge">UP</span></td></tr>
+                        <tr><td style="font-weight:600;">JVM Name</td><td id="jvmName">--</td></tr>
+                        <tr><td style="font-weight:600;">JVM Version</td><td id="jvmVersion">--</td></tr>
+                        <tr><td style="font-weight:600;">Available Processors</td><td id="processors">--</td></tr>
+                        <tr><td style="font-weight:600;">Peak Thread Count</td><td id="peakThreads">--</td></tr>
+                        <tr><td style="font-weight:600;">Daemon Threads</td><td id="daemonThreads">--</td></tr>
+                        <tr><td style="font-weight:600;">Max Memory</td><td id="maxMemory">--</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/monitoring.js}"></script>
+</body>
+</html>
