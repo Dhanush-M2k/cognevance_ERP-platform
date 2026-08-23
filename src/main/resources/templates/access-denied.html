@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Access Denied | Enterprise ERP Platform</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:40px;">
+    <div style="font-size:64px; margin-bottom:10px;">&#128274;</div>
+    <h1 style="font-size:26px; margin-bottom:8px;">Access Denied</h1>
+    <p style="color:var(--color-text-muted); max-width:420px; margin-bottom:24px;">
+        You don't have permission to view this page. If you believe this is a mistake, contact your administrator.
+    </p>
+    <a th:href="@{/dashboard}" class="btn btn-primary">Back to Dashboard</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Employees | Enterprise ERP Platform</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="~{fragments :: sidebar('employees')}"></div>
+    <div class="main-area">
+        <div th:replace="~{fragments :: topbar('Employee Management','Manage workforce records, roles and salaries')}"></div>
+        <div class="content">
+
+            <div class="panel-grid" style="grid-template-columns: 1fr;">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">Add New Employee</div>
+                            <div class="panel-subtitle">Create a new employee record</div>
+                        </div>
+                    </div>
+                    <form th:action="@{/employees}" th:object="${newEmployee}" method="post">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input class="form-control" type="text" th:field="*{fullName}" required/>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input class="form-control" type="email" th:field="*{email}" required/>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input class="form-control" type="text" th:field="*{phone}"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Department</label>
+                                <input class="form-control" type="text" th:field="*{department}" placeholder="e.g. Sales"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Designation</label>
+                                <input class="form-control" type="text" th:field="*{designation}" placeholder="e.g. Software Engineer"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Date of Joining</label>
+                                <input class="form-control" type="date" th:field="*{dateOfJoining}"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Salary (₹)</label>
+                                <input class="form-control" type="number" step="0.01" th:field="*{salary}"/>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select class="form-control" th:field="*{status}">
+                                    <option value="ACTIVE">Active</option>
+                                    <option value="ON_LEAVE">On Leave</option>
+                                    <option value="TERMINATED">Terminated</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="margin-top:16px;">
+                            <button type="submit" class="btn btn-primary">Add Employee</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">All Employees</div>
+                        <div class="panel-subtitle" th:text="${#lists.size(employees)} + ' total records'">0 records</div>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr><th>Name</th><th>Email</th><th>Department</th><th>Designation</th><th>Joined</th><th>Salary</th><th>Status</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="emp : ${employees}">
+                            <td th:text="${emp.fullName}">Name</td>
+                            <td th:text="${emp.email}">Email</td>
+                            <td th:text="${emp.department}">Dept</td>
+                            <td th:text="${emp.designation}">Designation</td>
+                            <td th:text="${emp.dateOfJoining}">Date</td>
+                            <td th:text="'₹' + ${#numbers.formatDecimal(emp.salary, 0, 'COMMA', 0, 'POINT')}">₹0</td>
+                            <td><span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(emp.status)}" th:text="${emp.status}">STATUS</span></td>
+                            <td>
+                                <div class="row-actions">
+                                    <form th:action="@{/employees/{id}/delete(id=${emp.id})}" method="post">
+                                        <button type="submit" class="icon-btn" title="Delete">&#10005;</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(employees)}"><td colspan="8" class="empty-state">No employees yet. Add one above.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
