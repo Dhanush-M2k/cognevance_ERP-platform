@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Create Account | Enterprise ERP Platform</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div class="auth-shell">
+    <div class="auth-visual">
+        <div class="brand-line" style="color:#fff;">
+            <div class="brand-badge" style="background:linear-gradient(135deg,#2952e3,#6f8cff); width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;">EP</div>
+            Enterprise ERP Platform
+        </div>
+        <h1>Join as a customer and share your voice.</h1>
+        <p>Create a free account to track your purchases and submit product feedback and reviews directly to our team.</p>
+        <div class="feature-list">
+            <div class="feature-item"><span class="feature-dot">&#9989;</span> Fast, secure sign up</div>
+            <div class="feature-item"><span class="feature-dot">&#11088;</span> Submit ratings &amp; reviews</div>
+            <div class="feature-item"><span class="feature-dot">&#128274;</span> Encrypted password storage</div>
+        </div>
+    </div>
+    <div class="auth-form-side">
+        <div class="auth-card">
+            <div class="brand-line">
+                <div class="brand-badge" style="background:linear-gradient(135deg,#2952e3,#6f8cff); width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;">EP</div>
+                ERP Platform
+            </div>
+            <h2>Create your account</h2>
+            <p class="auth-sub">New sign-ups are registered as customers.</p>
+
+            <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+            <form th:action="@{/register}" method="post">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input class="form-control" type="text" id="fullName" name="fullName" placeholder="Jane Doe" required/>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input class="form-control" type="text" id="username" name="username" placeholder="janedoe" required/>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input class="form-control" type="email" id="email" name="email" placeholder="jane@example.com" required/>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input class="form-control" type="password" id="password" name="password" placeholder="At least 6 characters" required/>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input class="form-control" type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter password" required/>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            </form>
+
+            <div class="auth-footer-link">
+                Already have an account? <a th:href="@{/login}">Sign in</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

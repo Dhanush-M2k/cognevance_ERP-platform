@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Finance | Enterprise ERP Platform</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="~{fragments :: sidebar('finance')}"></div>
+    <div class="main-area">
+        <div th:replace="~{fragments :: topbar('Finance Management','Track income, expenses and overall profitability')}"></div>
+        <div class="content">
+
+            <div class="stat-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="stat-card">
+                    <div class="stat-icon icon-green">&#128176;</div>
+                    <div class="stat-value" th:text="'₹' + ${#numbers.formatDecimal(totalIncome, 0, 'COMMA', 0, 'POINT')}">₹0</div>
+                    <div class="stat-label">Total Income</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-red">&#128184;</div>
+                    <div class="stat-value" th:text="'₹' + ${#numbers.formatDecimal(totalExpense, 0, 'COMMA', 0, 'POINT')}">₹0</div>
+                    <div class="stat-label">Total Expense</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-blue">&#128202;</div>
+                    <div class="stat-value" th:text="'₹' + ${#numbers.formatDecimal(netProfit, 0, 'COMMA', 0, 'POINT')}">₹0</div>
+                    <div class="stat-label">Net Profit</div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">Add Finance Record</div>
+                        <div class="panel-subtitle">Log a new income or expense entry</div>
+                    </div>
+                </div>
+                <form th:action="@{/finance}" th:object="${newRecord}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select class="form-control" th:field="*{type}">
+                                <option value="INCOME">Income</option>
+                                <option value="EXPENSE">Expense</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <input class="form-control" type="text" th:field="*{category}" placeholder="e.g. Payroll, Sales"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount (₹)</label>
+                            <input class="form-control" type="number" step="0.01" th:field="*{amount}" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input class="form-control" type="date" th:field="*{recordDate}"/>
+                        </div>
+                        <div class="form-group full">
+                            <label>Description</label>
+                            <input class="form-control" type="text" th:field="*{description}"/>
+                        </div>
+                    </div>
+                    <div style="margin-top:16px;">
+                        <button type="submit" class="btn btn-primary">Add Record</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">Transaction History</div>
+                        <div class="panel-subtitle" th:text="${#lists.size(records)} + ' entries'">0</div>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr><th>Type</th><th>Category</th><th>Description</th><th>Amount</th><th>Date</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="rec : ${records}">
+                            <td><span class="badge" th:classappend="${rec.type == 'INCOME'} ? 'badge-active' : 'badge-terminated'" th:text="${rec.type}">TYPE</span></td>
+                            <td th:text="${rec.category}">Category</td>
+                            <td th:text="${rec.description}">Description</td>
+                            <td th:text="'₹' + ${#numbers.formatDecimal(rec.amount, 0, 'COMMA', 2, 'POINT')}">₹0</td>
+                            <td th:text="${rec.recordDate}">Date</td>
+                            <td>
+                                <div class="row-actions">
+                                    <form th:action="@{/finance/{id}/delete(id=${rec.id})}" method="post">
+                                        <button type="submit" class="icon-btn" title="Delete">&#10005;</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(records)}"><td colspan="6" class="empty-state">No finance records yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

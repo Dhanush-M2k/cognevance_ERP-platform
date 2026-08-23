@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sales | Enterprise ERP Platform</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="~{fragments :: sidebar('sales')}"></div>
+    <div class="main-area">
+        <div th:replace="~{fragments :: topbar('Sales Management','Record and track customer orders')}"></div>
+        <div class="content">
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">Record New Sale</div>
+                        <div class="panel-subtitle">Create a new sales transaction</div>
+                    </div>
+                </div>
+                <form th:action="@{/sales}" th:object="${newSale}" method="post">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Customer Name</label>
+                            <input class="form-control" type="text" th:field="*{customerName}" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Product Name</label>
+                            <input class="form-control" type="text" th:field="*{productName}" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input class="form-control" type="number" th:field="*{quantity}" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Unit Price (₹)</label>
+                            <input class="form-control" type="number" step="0.01" th:field="*{unitPrice}" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select class="form-control" th:field="*{status}">
+                                <option value="COMPLETED">Completed</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="CANCELLED">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-top:16px;">
+                        <button type="submit" class="btn btn-primary">Record Sale</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">All Sales</div>
+                        <div class="panel-subtitle" th:text="${#lists.size(sales)} + ' transactions'">0</div>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                        <tr><th>Customer</th><th>Product</th><th>Qty</th><th>Unit Price</th><th>Total</th><th>Status</th><th>Date</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="sale : ${sales}">
+                            <td th:text="${sale.customerName}">Customer</td>
+                            <td th:text="${sale.productName}">Product</td>
+                            <td th:text="${sale.quantity}">0</td>
+                            <td th:text="'₹' + ${#numbers.formatDecimal(sale.unitPrice, 0, 'COMMA', 2, 'POINT')}">₹0</td>
+                            <td th:text="'₹' + ${#numbers.formatDecimal(sale.totalAmount, 0, 'COMMA', 2, 'POINT')}">₹0</td>
+                            <td><span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(sale.status)}" th:text="${sale.status}">STATUS</span></td>
+                            <td th:text="${#temporals.format(sale.saleDate, 'dd MMM yyyy')}">Date</td>
+                            <td>
+                                <div class="row-actions">
+                                    <form th:action="@{/sales/{id}/delete(id=${sale.id})}" method="post">
+                                        <button type="submit" class="icon-btn" title="Delete">&#10005;</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(sales)}"><td colspan="8" class="empty-state">No sales recorded yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

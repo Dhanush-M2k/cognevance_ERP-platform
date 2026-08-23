@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Feedback &amp; Reviews | Enterprise ERP Platform</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div class="app-shell">
+    <div th:replace="~{fragments :: sidebar('feedback')}"></div>
+    <div class="main-area">
+        <div th:replace="~{fragments :: topbar('Customer Feedback &amp; Reviews','Purchase reviews and satisfaction ratings')}"></div>
+        <div class="content">
+
+            <div class="panel-grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">Submit Feedback</div>
+                            <div class="panel-subtitle">Tell us about your purchase experience</div>
+                        </div>
+                    </div>
+                    <form th:action="@{/feedback}" th:object="${newFeedback}" method="post">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Your Name</label>
+                                <input class="form-control" type="text" th:field="*{customerName}" required/>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input class="form-control" type="email" th:field="*{customerEmail}"/>
+                            </div>
+                            <div class="form-group full">
+                                <label>Purchased Item / Service</label>
+                                <input class="form-control" type="text" th:field="*{purchaseItem}" placeholder="e.g. Wireless Mouse" required/>
+                            </div>
+                            <div class="form-group full">
+                                <label>Rating</label>
+                                <select class="form-control" th:field="*{rating}" required>
+                                    <option value="5">★★★★★ - Excellent</option>
+                                    <option value="4">★★★★☆ - Good</option>
+                                    <option value="3">★★★☆☆ - Average</option>
+                                    <option value="2">★★☆☆☆ - Poor</option>
+                                    <option value="1">★☆☆☆☆ - Very Poor</option>
+                                </select>
+                            </div>
+                            <div class="form-group full">
+                                <label>Your Review</label>
+                                <textarea class="form-control" th:field="*{reviewText}" placeholder="Share details of your experience with this product or service..."></textarea>
+                            </div>
+                        </div>
+                        <div style="margin-top:16px;">
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">Satisfaction Snapshot</div>
+                            <div class="panel-subtitle" th:text="'Average rating: ' + ${averageRating} + ' / 5'">Average</div>
+                        </div>
+                    </div>
+                    <div style="text-align:center; padding: 10px 0 20px;">
+                        <div style="font-size:44px; font-weight:800; color:var(--color-primary);" th:text="${averageRating}">0</div>
+                        <div class="stars" style="font-size:22px;">★★★★★</div>
+                        <div style="color:var(--color-text-muted); font-size:13px; margin-top:6px;"
+                             th:text="${#lists.size(feedbackList)} + ' reviews collected'">0 reviews</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">Recent Reviews</div>
+                        <div class="panel-subtitle">What customers are saying</div>
+                    </div>
+                </div>
+
+                <div th:if="${#lists.isEmpty(feedbackList)}" class="empty-state">
+                    <div class="empty-icon">&#128172;</div>
+                    No feedback submitted yet. Be the first to share your review!
+                </div>
+
+                <div th:each="fb : ${feedbackList}" class="review-card">
+                    <div class="review-top">
+                        <span class="reviewer-name" th:text="${fb.customerName}">Name</span>
+                        <span class="stars" th:text="${#strings.repeat('★', fb.rating)} + ${#strings.repeat('☆', 5 - fb.rating)}">★★★★★</span>
+                    </div>
+                    <div class="review-purchase">Purchased: <strong th:text="${fb.purchaseItem}">Item</strong></div>
+                    <div class="review-text" th:text="${fb.reviewText}">Review text goes here.</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                        <span class="review-date" th:text="${#temporals.format(fb.submittedAt, 'dd MMM yyyy, HH:mm')}">Date</span>
+                        <div class="row-actions">
+                            <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(fb.status)}" th:text="${fb.status}">STATUS</span>
+                            <form th:action="@{/feedback/{id}/delete(id=${fb.id})}" method="post">
+                                <button type="submit" class="icon-btn" title="Delete">&#10005;</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
